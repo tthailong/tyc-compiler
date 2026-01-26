@@ -679,9 +679,9 @@ for (auto i = 0; i < 10; ++i) {
 The **switch statement** allows selection among multiple statements based on the value of an expression. Switch statements take the following form:  
 ```tyc
 switch (<expression>) {
-    case <constant_expression>:
+    case <case_expression>:
         <statement_list>
-    case <constant_expression>:
+    case <case_expression>:
         <statement_list>
     ...
     default:
@@ -691,10 +691,16 @@ switch (<expression>) {
 
 Where:
 - `<expression>` must evaluate to an **int** value
-- `<constant_expression>` is an integer literal or constant expression that evaluates to an integer value
+- `<case_expression>` is an expression that evaluates to an **int** value. The case expression can be:
+  - An integer literal: `case 1:`, `case 42:`
+  - An integer literal with unary operators: `case +1:`, `case -5:`
+  - A parenthesized expression: `case (1):`, `case (2+3):`
+  - A constant expression (expressions involving only integer literals and operators): `case 1+2:`, `case (3*4):`
+  - Any other expression that evaluates to an int value at compile time
 - Each `case` label must be followed by a colon (`:`)
-- The `default` clause is optional and can appear anywhere within the switch statement
-- `<statement_list>` can be empty or contain one or more statements
+- The `default` clause is **optional** and can appear anywhere within the switch statement. **At most one `default` clause is allowed** - if multiple `default` clauses are present, it is a compile-time error.
+- The switch body can be empty (no case statements and no default clause): `switch (x) { }`
+- `<statement_list>` within each case or default can be empty or contain one or more statements
 - Like C, **TyC switch statements have fall-through behavior** - execution continues to the next case unless a `break` statement is used
 
 **Important:** In TyC, switch statements follow C-style fall-through behavior. Execution will fall through to subsequent cases unless explicitly terminated with a `break` statement. You can use multiple case labels for the same code block to handle multiple values.
@@ -713,9 +719,26 @@ switch (day) {
     default:
         printInt(0);
 }
-```
 
-In the example above, both case 2 and case 3 will execute the same code (print 2) because case 2 falls through to case 3.
+// Empty switch body is valid
+switch (x) { }
+
+// Case with constant expressions
+switch (x) {
+    case 1+2:        // Valid: constant expression
+        printInt(3);
+        break;
+    case (4):        // Valid: parenthesized expression
+        printInt(4);
+        break;
+    case +5:         // Valid: unary plus
+        printInt(5);
+        break;
+    case -6:         // Valid: unary minus
+        printInt(6);
+        break;
+}
+```
 
 ### Break Statement
 
