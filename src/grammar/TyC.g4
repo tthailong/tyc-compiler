@@ -25,10 +25,60 @@ options{
 }
 
 // TODO: Define grammar rules here
-program: EOF;
+program: ID EOF;
 
-WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs
+AUTO: 'auto' ;
+BREAK: 'break' ;
+CASE: 'case' ;
+CONTINUE: 'continue' ;
+DEFAULT: 'default' ;
+ELSE: 'else' ;
+FLOAT: 'float' ;
+FOR: 'for' ;
+IF: 'if' ;
+INT: 'int';
+RETURN: 'return' ;
+STRING: 'string' ;
+STRUCT: 'struct' ;
+SWITCH: 'switch' ;
+VOID: 'void' ;
+WHILE: 'while' ;
+
+ADD: '+' ;
+SUB: '-' ;
+MUL: '*' ;
+DIV: '/' ;
+MOD: '%' ;
+EQUAL: '==' ;
+NOTEQUAL: '!=' ;
+LESSTHAN: '<' ;
+GREATERTHAN: '>' ;
+LESSTHAN_EQUAL: '<=' ;
+GREATERTHAN_EQUAL: '>=' ;
+OR: '||' ;
+AND: '&&' ;
+NOT: '!' ;
+INCREMENT: '++' ;
+DECREMENT: '--' ;
+ASSIGN: '=' ;
+ACCESS: '.' ;
+
+SEPARATOR: '['|']'|'('|')'|'{'|'}'|';'|',' ;
+
+
+ID: [a-zA-Z_][a-zA-Z0-9_]* ;
+
+//INTLIT: [0]|[-]?[1-9][0-9]* ;
+INTLIT: [-]?[0-9]+ ;
+
+FLOATLIT: [-]?[0-9]*'.'[0-9]+([Ee][-]?[0-9]+)?|[-]?[0-9]+ '.';
+
+fragment ESCAPE: '\\'[bfrnt"\\] ;
+STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] ;
+
+//WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs
+WS : [ \f\t\r\n]+ -> skip ; // skip spaces, tabs
 
 ERROR_CHAR: .;
-ILLEGAL_ESCAPE:.;
-UNCLOSE_STRING:.;
+ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] ;
+UNCLOSE_STRING: ["](ESCAPE|~["\\\r\n])*;
