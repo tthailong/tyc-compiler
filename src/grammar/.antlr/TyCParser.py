@@ -12,8 +12,9 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3-")
-        buf.write("\b\4\2\t\2\3\2\3\2\3\2\3\2\2\2\3\2\2\2\2\6\2\4\3\2\2\2")
-        buf.write("\4\5\7&\2\2\5\6\7\2\2\3\6\3\3\2\2\2\2")
+        buf.write("\13\4\2\t\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\2\2\3\2\2\2\2")
+        buf.write("\t\2\4\3\2\2\2\4\5\7&\2\2\5\6\7\'\2\2\6\7\7(\2\2\7\b\7")
+        buf.write(")\2\2\b\t\7\2\2\3\t\3\3\2\2\2\2")
         return buf.getvalue()
 
 
@@ -41,8 +42,8 @@ class TyCParser ( Parser ):
                       "GREATERTHAN", "LESSTHAN_EQUAL", "GREATERTHAN_EQUAL", 
                       "OR", "AND", "NOT", "INCREMENT", "DECREMENT", "ASSIGN", 
                       "ACCESS", "SEPARATOR", "ID", "INTLIT", "FLOATLIT", 
-                      "STRINGLIT", "WS", "ERROR_CHAR", "ILLEGAL_ESCAPE", 
-                      "UNCLOSE_STRING" ]
+                      "STRINGLIT", "WS", "ILLEGAL_ESCAPE", "UNCLOSE_STRING", 
+                      "ERROR_CHAR" ]
 
     RULE_program = 0
 
@@ -89,9 +90,9 @@ class TyCParser ( Parser ):
     FLOATLIT=38
     STRINGLIT=39
     WS=40
-    ERROR_CHAR=41
-    ILLEGAL_ESCAPE=42
-    UNCLOSE_STRING=43
+    ILLEGAL_ESCAPE=41
+    UNCLOSE_STRING=42
+    ERROR_CHAR=43
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -112,6 +113,15 @@ class TyCParser ( Parser ):
         def ID(self):
             return self.getToken(TyCParser.ID, 0)
 
+        def INTLIT(self):
+            return self.getToken(TyCParser.INTLIT, 0)
+
+        def FLOATLIT(self):
+            return self.getToken(TyCParser.FLOATLIT, 0)
+
+        def STRINGLIT(self):
+            return self.getToken(TyCParser.STRINGLIT, 0)
+
         def EOF(self):
             return self.getToken(TyCParser.EOF, 0)
 
@@ -130,6 +140,12 @@ class TyCParser ( Parser ):
             self.state = 2
             self.match(TyCParser.ID)
             self.state = 3
+            self.match(TyCParser.INTLIT)
+            self.state = 4
+            self.match(TyCParser.FLOATLIT)
+            self.state = 5
+            self.match(TyCParser.STRINGLIT)
+            self.state = 6
             self.match(TyCParser.EOF)
         except RecognitionException as re:
             localctx.exception = re

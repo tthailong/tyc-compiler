@@ -25,7 +25,7 @@ options{
 }
 
 // TODO: Define grammar rules here
-program: ID EOF;
+program: ID INTLIT FLOATLIT STRINGLIT EOF;
 
 AUTO: 'auto' ;
 BREAK: 'break' ;
@@ -63,7 +63,7 @@ DECREMENT: '--' ;
 ASSIGN: '=' ;
 ACCESS: '.' ;
 
-SEPARATOR: '['|']'|'('|')'|'{'|'}'|';'|',' ;
+SEPARATOR: '('|')'|'{'|'}'|';'|','|':' ;
 
 
 ID: [a-zA-Z_][a-zA-Z0-9_]* ;
@@ -74,11 +74,15 @@ INTLIT: [-]?[0-9]+ ;
 FLOATLIT: [-]?[0-9]*'.'[0-9]+([Ee][-]?[0-9]+)?|[-]?[0-9]+ '.';
 
 fragment ESCAPE: '\\'[bfrnt"\\] ;
-STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] ;
+STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] {self.text = self.text[1:-1]};
 
 //WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs
 WS : [ \f\t\r\n]+ -> skip ; // skip spaces, tabs
 
+
+ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] {self.text = self.text[1:]};
+UNCLOSE_STRING: ["](ESCAPE|~["\\\r\n])* {self.text = self.text[1:]};
+
+
+
 ERROR_CHAR: .;
-ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] ;
-UNCLOSE_STRING: ["](ESCAPE|~["\\\r\n])*;
