@@ -63,15 +63,19 @@ DECREMENT: '--' ;
 ASSIGN: '=' ;
 ACCESS: '.' ;
 
-SEPARATOR: '('|')'|'{'|'}'|';'|','|':' ;
-
+LP: '(' ;
+RP: ')' ;
+LB: '{' ;
+RB: '}' ;
+CM: ',' ;
+SM: ';' ;
 
 ID: [a-zA-Z_][a-zA-Z0-9_]* ;
 
 //INTLIT: [0]|[-]?[1-9][0-9]* ;
 INTLIT: [-]?[0-9]+ ;
 
-FLOATLIT: [-]?[0-9]*'.'[0-9]+([Ee][-]?[0-9]+)?|[-]?[0-9]+ '.';
+FLOATLIT: [-]?[0-9]*'.'[0-9]+([Ee][-]?[0-9]+)?|[-]?[0-9]+'.'|[-]?[0-9]+[Ee][-]?[0-9]+;
 
 fragment ESCAPE: '\\'[bfrnt"\\] ;
 STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] {self.text = self.text[1:-1]};
@@ -82,7 +86,22 @@ WS : [ \f\t\r\n]+ -> skip ; // skip spaces, tabs
 
 ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] {self.text = self.text[1:]};
 UNCLOSE_STRING: ["](ESCAPE|~["\\\r\n])* {self.text = self.text[1:]};
-
-
-
 ERROR_CHAR: .;
+
+typ: INT | FLOAT | STRING ;
+
+funcdecl: rettyp ID LP paramlist RP LB stmtlist RB ;
+rettyp: typ | VOID ; //need to recheck this rule
+paramlist: pardecl paramtail | ;
+paramtail: CM pardecl paramtail | ;
+pardecl: typ ID ;
+stmtlist: 'statementlist' ;
+
+structdecl: ID LB memlist RB SM ;
+memlist: memtyp ID SM memlist | ;
+memtyp: typ | ID ; //1 test case for already declare struct
+
+structvardecl: 'structvardecl' ;
+
+
+
