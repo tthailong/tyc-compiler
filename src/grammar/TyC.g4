@@ -69,6 +69,7 @@ LB: '{' ;
 RB: '}' ;
 CM: ',' ;
 SM: ';' ;
+CL: ':' ;
 
 ID: [a-zA-Z_][a-zA-Z0-9_]* ;
 
@@ -96,24 +97,76 @@ paramlist: pardecl paramtail | ;
 paramtail: CM pardecl paramtail | ;
 pardecl: typ ID ;
 
-stmtlist: 'statementlist' ;
+stmtlist: stmt stmttail | ;
+stmttail: stmt stmttail | ;
 
 structdecl: STRUCT ID LB memlist RB SM ;
 memlist: memtyp ID SM memlist | ;
-memtyp: typ ; //1 test case for already declare struct
+memtyp: typ ; //1 test case for already declare struct (ID)
 
 structvardecl: ID structvar SM ;
 structvar: ID | ID ASSIGN LB exprlist RB ;
 exprlist: expr exprtail | ;
 exprtail: CM expr exprtail | ;
-expr: 'expr' ;
+//expr: 'expr' ;
 
 structmemaccess: ID ACCESS ID ;
 
-vardecl: AUTO ID ASSIGN expr SM
-        | AUTO ID SM
-        | typ ID ASSIGN expr SM
-        | typ ID SM
+vardecl: AUTO ID ASSIGN expr 
+        | AUTO ID 
+        | typ ID ASSIGN expr 
+        | typ ID 
         ;
 
+funccalldecl: ID LP arglist RP ;
+arglist: expr argtail | ;
+argtail: CM expr argtail | ;
+
+assignexpr: assigntyp ASSIGN expr ;
+assigntyp: ID | structmemaccess ;
+expr: expr1 ASSIGN expr | expr1 ;
+expr1: expr1 OR expr2 | expr2 ;
+expr2: expr2 AND expr3 | expr3 ;
+expr3: expr3 EQUAL expr4 | expr3 NOTEQUAL expr4 | expr4 ;
+expr4: expr4 LESSTHAN expr5
+    | expr4 LESSTHAN_EQUAL expr5
+    | expr4 GREATERTHAN expr5
+    | expr4 GREATERTHAN_EQUAL expr5
+    | expr5 ;
+expr5: expr5 ADD expr6 | expr5 SUB expr6 | expr6 ;
+expr6: expr6 MUL expr7 | expr6 DIV expr7 | expr6 MOD expr7 | expr7 ;
+expr7: NOT expr7 | ADD expr7 | SUB expr7 | expr8 ;
+expr8: INCREMENT expr8 | DECREMENT expr8 | expr9 ;
+expr9: expr9 INCREMENT | expr9 DECREMENT | expr10 ;
+expr10: expr10 ACCESS expr11 | expr11 ;
+expr11: INTLIT | FLOATLIT | STRINGLIT | ID ;
+//expr11: ID | LP expr RP ;
+
+stmt: vardecl SM
+    | blockstmt
+    | ifstmt
+    | whilestmt
+    | forstmt
+    | switchstmt
+    | breakstmt
+    | continuestmt
+    | returnstmt
+    | exprstmt
+    ;
+
+blockstmt: LB blocklist RB ;
+blocklist: stmt blocklist | ;
+
+ifstmt: IF LP expr RP stmt | IF LP expr RP stmt ELSE stmt ;
+
+whilestmt: WHILE LP expr RP stmt ;
+
+forstmt: FOR LP init SM cond SM updt RP stmt ;
+init: vardecl | expr | ;
+cond: expr | ;
+updt: expr | ;
+
+switchstmt: SWITCH LP expr RP LB caselist RB ;
+caselist: CASE caseexpr CL stmtlist | DEFAULT CL stmtlist | ;
+caseexpr: INTLIT ;
 
