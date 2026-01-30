@@ -88,20 +88,32 @@ ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] {self.text = se
 UNCLOSE_STRING: ["](ESCAPE|~["\\\r\n])* {self.text = self.text[1:]};
 ERROR_CHAR: .;
 
-typ: INT | FLOAT | STRING ;
+typ: INT | FLOAT | STRING | ID;
 
-funcdecl: rettyp ID LP paramlist RP LB stmtlist RB ;
+funcdecl: rettyp? ID LP paramlist RP LB stmtlist RB ;
 rettyp: typ | VOID ; //need to recheck this rule
 paramlist: pardecl paramtail | ;
 paramtail: CM pardecl paramtail | ;
 pardecl: typ ID ;
+
 stmtlist: 'statementlist' ;
 
-structdecl: ID LB memlist RB SM ;
+structdecl: STRUCT ID LB memlist RB SM ;
 memlist: memtyp ID SM memlist | ;
-memtyp: typ | ID ; //1 test case for already declare struct
+memtyp: typ ; //1 test case for already declare struct
 
-structvardecl: 'structvardecl' ;
+structvardecl: ID structvar SM ;
+structvar: ID | ID ASSIGN LB exprlist RB ;
+exprlist: expr exprtail | ;
+exprtail: CM expr exprtail | ;
+expr: 'expr' ;
 
+structmemaccess: ID ACCESS ID ;
+
+vardecl: AUTO ID ASSIGN expr SM
+        | AUTO ID SM
+        | typ ID ASSIGN expr SM
+        | typ ID SM
+        ;
 
 
