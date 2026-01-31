@@ -5,7 +5,7 @@ TODO: Implement 100 test cases for lexer
 
 import pytest
 from tests.utils import Tokenizer
-from build.TyCLexer import UncloseString, IllegalEscape, ErrorToken
+#from build.TyCLexer import UncloseString, IllegalEscape, ErrorToken
 
 # ========== Simple Test Cases (10 types) ==========
 def test_keyword_auto():

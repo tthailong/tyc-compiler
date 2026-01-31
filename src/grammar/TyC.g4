@@ -25,7 +25,14 @@ options{
 }
 
 // TODO: Define grammar rules here
-program: ID INTLIT FLOATLIT STRINGLIT EOF;
+program: manydecls EOF;
+manydecls: decl manydecls | ;
+decl: vardecl | funcdecl | structdecl ;
+
+
+LINE_COMMENT: '//' ~[\r\n]* -> skip ;
+BLOCK_COMMENT: '/*' .*? '*/' -> skip ;
+WS : [ \f\t\r\n]+ -> skip ; // skip spaces, tabs
 
 AUTO: 'auto' ;
 BREAK: 'break' ;
@@ -43,6 +50,7 @@ STRUCT: 'struct' ;
 SWITCH: 'switch' ;
 VOID: 'void' ;
 WHILE: 'while' ;
+
 
 ADD: '+' ;
 SUB: '-' ;
@@ -82,7 +90,6 @@ fragment ESCAPE: '\\'[bfrnt"\\] ;
 STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] {self.text = self.text[1:-1]};
 
 //WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs
-WS : [ \f\t\r\n]+ -> skip ; // skip spaces, tabs
 
 
 ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] {self.text = self.text[1:]};
@@ -91,14 +98,14 @@ ERROR_CHAR: .;
 
 typ: INT | FLOAT | STRING | ID;
 
-funcdecl: rettyp? ID LP paramlist RP LB stmtlist RB ;
+funcdecl: rettyp ID LP paramlist RP LB stmtlist RB 
+        | ID LP paramlist RP LB stmtlist RB ;
 rettyp: typ | VOID ; //need to recheck this rule
 paramlist: pardecl paramtail | ;
 paramtail: CM pardecl paramtail | ;
 pardecl: typ ID ;
 
-stmtlist: stmt stmttail | ;
-stmttail: stmt stmttail | ;
+stmtlist: stmt stmtlist | ;
 
 structdecl: STRUCT ID LB memlist RB SM ;
 memlist: memtyp ID SM memlist | ;
@@ -110,8 +117,6 @@ exprlist: expr exprtail | ;
 exprtail: CM expr exprtail | ;
 //expr: 'expr' ;
 
-structmemaccess: ID ACCESS ID ;
-
 vardecl: AUTO ID ASSIGN expr 
         | AUTO ID 
         | typ ID ASSIGN expr 
@@ -122,8 +127,6 @@ funccalldecl: ID LP arglist RP ;
 arglist: expr argtail | ;
 argtail: CM expr argtail | ;
 
-assignexpr: assigntyp ASSIGN expr ;
-assigntyp: ID | structmemaccess ;
 expr: expr1 ASSIGN expr | expr1 ;
 expr1: expr1 OR expr2 | expr2 ;
 expr2: expr2 AND expr3 | expr3 ;
@@ -139,7 +142,7 @@ expr7: NOT expr7 | ADD expr7 | SUB expr7 | expr8 ;
 expr8: INCREMENT expr8 | DECREMENT expr8 | expr9 ;
 expr9: expr9 INCREMENT | expr9 DECREMENT | expr10 ;
 expr10: expr10 ACCESS expr11 | expr11 ;
-expr11: INTLIT | FLOATLIT | STRINGLIT | ID ;
+expr11: INTLIT | FLOATLIT | STRINGLIT | ID | funccalldecl | LP expr RP ;
 //expr11: ID | LP expr RP ;
 
 stmt: vardecl SM
@@ -154,8 +157,7 @@ stmt: vardecl SM
     | exprstmt
     ;
 
-blockstmt: LB blocklist RB ;
-blocklist: stmt blocklist | ;
+blockstmt: LB stmtlist RB ;
 
 ifstmt: IF LP expr RP stmt | IF LP expr RP stmt ELSE stmt ;
 
@@ -167,6 +169,14 @@ cond: expr | ;
 updt: expr | ;
 
 switchstmt: SWITCH LP expr RP LB caselist RB ;
-caselist: CASE caseexpr CL stmtlist | DEFAULT CL stmtlist | ;
-caseexpr: INTLIT ;
+caselist: caseclause caselist | ;
+caseclause: CASE caseexpr CL stmtlist | DEFAULT CL stmtlist; //recheck case default
+caseexpr: expr ;
 
+breakstmt: BREAK SM ;
+
+continuestmt: CONTINUE SM ;
+
+returnstmt: RETURN expr SM | RETURN SM ;
+
+exprstmt: expr SM ;
