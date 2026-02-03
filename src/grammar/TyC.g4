@@ -29,73 +29,6 @@ program: manydecls EOF;
 manydecls: decl manydecls | ;
 decl: vardecl | funcdecl | structdecl ;
 
-
-LINE_COMMENT: '//' ~[\r\n]* -> skip ;
-BLOCK_COMMENT: '/*' .*? '*/' -> skip ;
-WS : [ \f\t\r\n]+ -> skip ; // skip spaces, tabs
-
-AUTO: 'auto' ;
-BREAK: 'break' ;
-CASE: 'case' ;
-CONTINUE: 'continue' ;
-DEFAULT: 'default' ;
-ELSE: 'else' ;
-FLOAT: 'float' ;
-FOR: 'for' ;
-IF: 'if' ;
-INT: 'int';
-RETURN: 'return' ;
-STRING: 'string' ;
-STRUCT: 'struct' ;
-SWITCH: 'switch' ;
-VOID: 'void' ;
-WHILE: 'while' ;
-
-
-ADD: '+' ;
-SUB: '-' ;
-MUL: '*' ;
-DIV: '/' ;
-MOD: '%' ;
-EQUAL: '==' ;
-NOTEQUAL: '!=' ;
-LESSTHAN: '<' ;
-GREATERTHAN: '>' ;
-LESSTHAN_EQUAL: '<=' ;
-GREATERTHAN_EQUAL: '>=' ;
-OR: '||' ;
-AND: '&&' ;
-NOT: '!' ;
-INCREMENT: '++' ;
-DECREMENT: '--' ;
-ASSIGN: '=' ;
-ACCESS: '.' ;
-
-LP: '(' ;
-RP: ')' ;
-LB: '{' ;
-RB: '}' ;
-CM: ',' ;
-SM: ';' ;
-CL: ':' ;
-
-ID: [a-zA-Z_][a-zA-Z0-9_]* ;
-
-//INTLIT: [0]|[-]?[1-9][0-9]* ;
-INTLIT: [-]?[0-9]+ ;
-
-FLOATLIT: [-]?[0-9]*'.'[0-9]+([Ee][-]?[0-9]+)?|[-]?[0-9]+'.'|[-]?[0-9]+[Ee][-]?[0-9]+;
-
-fragment ESCAPE: '\\'[bfrnt"\\] ;
-STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] {self.text = self.text[1:-1]};
-
-//WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs
-
-
-ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] {self.text = self.text[1:]};
-UNCLOSE_STRING: ["](ESCAPE|~["\\\r\n])* {self.text = self.text[1:]};
-ERROR_CHAR: .;
-
 typ: INT | FLOAT | STRING | ID;
 
 funcdecl: rettyp ID LP paramlist RP LB stmtlist RB 
@@ -180,3 +113,67 @@ continuestmt: CONTINUE SM ;
 returnstmt: RETURN expr SM | RETURN SM ;
 
 exprstmt: expr SM ;
+
+AUTO: 'auto' ;
+BREAK: 'break' ;
+CASE: 'case' ;
+CONTINUE: 'continue' ;
+DEFAULT: 'default' ;
+ELSE: 'else' ;
+FLOAT: 'float' ;
+FOR: 'for' ;
+IF: 'if' ;
+INT: 'int';
+RETURN: 'return' ;
+STRING: 'string' ;
+STRUCT: 'struct' ;
+SWITCH: 'switch' ;
+VOID: 'void' ;
+WHILE: 'while' ;
+
+
+ADD: '+' ;
+SUB: '-' ;
+MUL: '*' ;
+DIV: '/' ;
+MOD: '%' ;
+EQUAL: '==' ;
+NOTEQUAL: '!=' ;
+LESSTHAN: '<' ;
+GREATERTHAN: '>' ;
+LESSTHAN_EQUAL: '<=' ;
+GREATERTHAN_EQUAL: '>=' ;
+OR: '||' ;
+AND: '&&' ;
+NOT: '!' ;
+INCREMENT: '++' ;
+DECREMENT: '--' ;
+ASSIGN: '=' ;
+ACCESS: '.' ;
+
+LP: '(' ;
+RP: ')' ;
+LB: '{' ;
+RB: '}' ;
+CM: ',' ;
+SM: ';' ;
+CL: ':' ;
+
+
+ID: [a-zA-Z_][a-zA-Z0-9_]* ;
+
+INTLIT: [-]?[0-9]+ ;
+
+FLOATLIT: [-]?[0-9]*'.'[0-9]+([Ee](SUB|ADD)?[0-9]+)?|[-]?[0-9]+'.'|[-]?[0-9]+[Ee](SUB|ADD)?[0-9]+;
+
+fragment ESCAPE: '\\'[bfrnt"\\] ;
+STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] {self.text = self.text[1:-1]};
+
+WS : [ \f\t\r\n]+ -> skip ; // skip spaces, tabs
+LINE_COMMENT: '//' ~[\r\n]* -> skip ;
+BLOCK_COMMENT: '/*' .*? '*/' -> skip ;
+
+ILLEGAL_ESCAPE : '"' (ESCAPE | ~["\\\r\n])* '\\' ~[bfrnt"\\\r\n] {self.text = self.text[1:]};
+UNCLOSE_STRING: ["](ESCAPE|~["\\\r\n])* {self.text = self.text[1:]};
+ERROR_CHAR: .;
+
