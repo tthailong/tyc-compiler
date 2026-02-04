@@ -27,7 +27,7 @@ options{
 // TODO: Define grammar rules here
 program: manydecls EOF;
 manydecls: decl manydecls | ;
-decl: vardecl | funcdecl | structdecl ;
+decl: funcdecl | structdecl ;
 
 typ: INT | FLOAT | STRING | ID;
 
@@ -75,10 +75,11 @@ expr7: NOT expr7 | ADD expr7 | SUB expr7 | expr8 ;
 expr8: INCREMENT expr8 | DECREMENT expr8 | expr9 ;
 expr9: expr9 INCREMENT | expr9 DECREMENT | expr10 ;
 expr10: expr10 ACCESS expr11 | expr11 ;
-expr11: INTLIT | FLOATLIT | STRINGLIT | ID | funccalldecl | LP expr RP ;
+expr11: INTLIT | FLOATLIT | STRINGLIT | ID | funccalldecl | LP expr RP | LB exprlist RB;
 //expr11: ID | LP expr RP ;
 
 stmt: vardecl SM
+    | structvardecl
     | blockstmt
     | ifstmt
     | whilestmt

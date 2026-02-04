@@ -6,6 +6,7 @@ TODO: Implement 100 test cases for lexer
 import pytest
 from tests.utils import Tokenizer
 
+#this is keyword test
 def test_keyword_auto():
     """1. Keyword"""
     tokenizer = Tokenizer("auto")
@@ -86,7 +87,7 @@ def test_keyword_while():
     tokenizer = Tokenizer("while")
     assert tokenizer.get_tokens_as_string() == "while,<EOF>"
 
-
+#this is operator test
 def test_operator_add():
     """17. Operator"""
     tokenizer = Tokenizer("+")
@@ -177,7 +178,7 @@ def test_operator_access():
     tokenizer = Tokenizer(".")
     assert tokenizer.get_tokens_as_string() == ".,<EOF>"
 
-
+#this is separator test
 def test_seperator_leftparatheses():
     """35. Separator"""
     tokenizer = Tokenizer("(")
@@ -213,7 +214,7 @@ def test_separator_colon():
     tokenizer = Tokenizer(":")
     assert tokenizer.get_tokens_as_string() == ":,<EOF>"
 
-
+#this is integer test
 def test_integer_single_digit():
     """42. Integer literal"""
     tokenizer = Tokenizer("5")
@@ -234,7 +235,7 @@ def test_integer_negative():
     tokenizer = Tokenizer("-123")
     assert tokenizer.get_tokens_as_string() == "-123,<EOF>"
 
-
+#this is float test
 def test_float_decimal_point():
     """46. Float literal"""
     tokenizer = Tokenizer("0.0")
@@ -295,7 +296,7 @@ def test_float_decimal_two_e():
     tokenizer = Tokenizer("5e6e7") # floatlit + id
     assert tokenizer.get_tokens_as_string() == "5e6,e7,<EOF>"
 
-
+#this is string test
 def test_string_empty():
     """58. String literal"""
     tokenizer = Tokenizer('""')
@@ -322,9 +323,9 @@ def test_string_escape_formfeed():
     assert tokenizer.get_tokens_as_string() == "test\\fformfeed,<EOF>"
 
 def test_string_escape_carriage_return():
-    """63. String literal"""
-    tokenizer = Tokenizer('"test\\rcarriage"')
-    assert tokenizer.get_tokens_as_string() == "test\\rcarriage,<EOF>"
+    """63. Unclosed string"""
+    tokenizer = Tokenizer('"test \\\r')
+    assert tokenizer.get_tokens_as_string() == 'Unclosed String: test '
 
 def test_string_escape_newline():
     """64. String literal"""
@@ -347,51 +348,47 @@ def test_string_escape_backslash():
     assert tokenizer.get_tokens_as_string() == "path\\\\to\\\\file,<EOF>"
 
 def test_string_with_numbers():
-    """69. String literal"""
+    """68. String literal"""
     tokenizer = Tokenizer('"abc123def456"')
     assert tokenizer.get_tokens_as_string() == "abc123def456,<EOF>"
 
 def test_string_with_special_chars():
-    """70. String literal"""
+    """69. String literal"""
     tokenizer = Tokenizer('"!@#$%^&*()_+-=[]{}|;:,.<>?/"')
     assert tokenizer.get_tokens_as_string() == "!@#$%^&*()_+-=[]{}|;:,.<>?/,<EOF>"
 
 def test_string_single_char():
-    """71. String literal"""
+    """70. String literal"""
     tokenizer = Tokenizer('"a"')
     assert tokenizer.get_tokens_as_string() == "a,<EOF>"
 
 def test_string_long():
-    """72. String literal"""
+    """71. String literal"""
     tokenizer = Tokenizer('"This is a very long string with many words and characters"')
     assert tokenizer.get_tokens_as_string() == "This is a very long string with many words and characters,<EOF>"
 
 def test_string_in_expression():
-    """73. String literal"""
+    """72. String literal"""
     tokenizer = Tokenizer('auto msg = "Hello";')
     assert tokenizer.get_tokens_as_string() == 'auto,msg,=,Hello,;,<EOF>'
 
 def test_string_illegal_escape():
-    """Illegal escape"""
+    """73. Illegal escape"""
     tokenizer = Tokenizer('"Hi \\a Long"') 
     assert tokenizer.get_tokens_as_string() == 'Illegal Escape In String: Hi \\a'
 
 def test_string_illegal_escape_enter():
-    """Illegal escape"""
-    input_text = """
-    "Hi \\a
-    Long"
-    """
-    tokenizer = Tokenizer(input_text) 
-    assert tokenizer.get_tokens_as_string() == 'Illegal Escape In String: Hi \\a'
+    """74. Unclosed string"""
+    tokenizer = Tokenizer('"Hi \\\n') 
+    assert tokenizer.get_tokens_as_string() == 'Unclosed String: Hi '
 
 def test_string_unclose():
-    """Unclose string"""
+    """75. Unclosed string"""
     tokenizer = Tokenizer('"Hi Long')
     assert tokenizer.get_tokens_as_string() == 'Unclosed String: Hi Long'
 
 def test_string_unclose_enter():
-    """Unclose string"""
+    """76. Unclosed string"""
     input_text = """
     "Hi
     Long"
@@ -400,54 +397,54 @@ def test_string_unclose_enter():
     assert tokenizer.get_tokens_as_string() == 'Unclosed String: Hi'
 
 def test_string_illegal_unclose():
-    """Illegal escape and unclose string"""
+    """77. Illegal escape"""
     tokenizer = Tokenizer('"Hi \\a Long')
     assert tokenizer.get_tokens_as_string() == 'Illegal Escape In String: Hi \\a'
 
-
+#this is identifier test
 def test_identifier_simple():
-    """74. Identifier"""
+    """78. Identifier"""
     tokenizer = Tokenizer("x")
     assert tokenizer.get_tokens_as_string() == "x,<EOF>"
 
 def test_identifier_uppercase():
-    """75. Identifier"""
+    """79. Identifier"""
     tokenizer = Tokenizer("X")
     assert tokenizer.get_tokens_as_string() == "X,<EOF>"
 
 def test_identifier_underscore():
-    """76. Identifier"""
+    """80. Identifier"""
     tokenizer = Tokenizer("_aZ9")
     assert tokenizer.get_tokens_as_string() == "_aZ9,<EOF>"
 
 def test_identifier_error_start_with_number():
-    """77. Identifier error"""
+    """81. Identifier error"""
     tokenizer = Tokenizer("1a")
     assert tokenizer.get_tokens_as_string() == "1,a,<EOF>"
 
 def test_identifier_four_ID():
-    """78. Identifier"""
+    """82. Identifier"""
     tokenizer = Tokenizer("MyVar myvar MYVAR _myVar")
     assert tokenizer.get_tokens_as_string() == "MyVar,myvar,MYVAR,_myVar,<EOF>"
 
-
+#this is comment test
 def test_line_comment():
-    """8. Line comment"""
+    """83. Line comment"""
     tokenizer = Tokenizer("// This is a comment")
     assert tokenizer.get_tokens_as_string() == "<EOF>"
 
 def test_block_comment():
-    """8. Block comment"""
+    """84. Block comment"""
     tokenizer = Tokenizer("/* This is a comment */")
     assert tokenizer.get_tokens_as_string() == "<EOF>"
 
 def test_line_comment_in_block_comment():
-    """8. Line comment"""
+    """85. Line comment"""
     tokenizer = Tokenizer("/* // This is a comment */")
     assert tokenizer.get_tokens_as_string() == "<EOF>"
 
 def test_block_comment_enter():
-    """8. Block comment"""
+    """86. Block comment"""
     input_text = """
     /* This is
         super
@@ -457,73 +454,76 @@ def test_block_comment_enter():
     tokenizer = Tokenizer(input_text)
     assert tokenizer.get_tokens_as_string() == "<EOF>"
 
-
+#this is mixed test
 def test_operators_mixed_in_expression():
-    """Mixed - all operators"""
+    """87. Mixed"""
     tokenizer = Tokenizer("a + b * c - d / e % f == g != h < i <= j > k >= l && m || n ! o ++ p -- q a++ b--")
     assert tokenizer.get_tokens_as_string() == "a,+,b,*,c,-,d,/,e,%,f,==,g,!=,h,<,i,<=,j,>,k,>=,l,&&,m,||,n,!,o,++,p,--,q,a,++,b,--,<EOF>"
 
 def test_increment_decrement_operators():
-    """Mixed - increment and decrement"""
+    """88. Mixed"""
     tokenizer = Tokenizer("++a -- b a++ b--")
     assert tokenizer.get_tokens_as_string() == "++,a,--,b,a,++,b,--,<EOF>"
 
 def test_expression_adjacent_operators():
-    """Mixed - adjacent multi-char operators"""
+    """89. Mixed"""
     tokenizer = Tokenizer("a++---10") 
     assert tokenizer.get_tokens_as_string() == "a,++,--,-10,<EOF>"
 
 def test_expression_nested_parentheses():
-    """Mixed - nested parentheses"""
+    """90. Mixed"""
     tokenizer = Tokenizer("((a + b) * c)")
     assert tokenizer.get_tokens_as_string() == "(,(,a,+,b,),*,c,),<EOF>"
 
 def test_expression_member_access():
-    """Mixed - struct member access"""
+    """91. Mixed"""
     tokenizer = Tokenizer("person.name.length")
     assert tokenizer.get_tokens_as_string() == "person,.,name,.,length,<EOF>"
 
 def test_expression_function_call():
-    """Mixed - function call"""
+    """92. Mixed"""
     tokenizer = Tokenizer("add(5, 10)")
     assert tokenizer.get_tokens_as_string() == "add,(,5,,,10,),<EOF>"
 
 def test_expression_chained_function_calls():
-    """Mixed - chained function calls"""
+    """93. Mixed"""
     tokenizer = Tokenizer("f(g(h(x)))")
     assert tokenizer.get_tokens_as_string() == "f,(,g,(,h,(,x,),),),<EOF>"
 
 def test_expression_with_line_comment():
-    """Mixed - expression with line comment"""
+    """94. Mixed"""
     tokenizer = Tokenizer("x + y // add them")
     assert tokenizer.get_tokens_as_string() == "x,+,y,<EOF>"
 
+#this is complex test
 def test_complex_expression():
-    """10. Complex: variable declaration"""
+    """95. Complex"""
     tokenizer = Tokenizer("auto x = 5 + 3 * 2;")
     assert tokenizer.get_tokens_as_string() == "auto,x,=,5,+,3,*,2,;,<EOF>"
 
 def test_complex_expression_2():
+    """96. Complex"""
     tokenizer = Tokenizer("--45")
     assert tokenizer.get_tokens_as_string() == "--,45,<EOF>"
 
+#this is expression test
 def test_expression_for_loop():
-    """Mixed - for loop tokens"""
+    """97. Expression"""
     tokenizer = Tokenizer("for (auto i = 0; i < 10; ++i)")
     assert tokenizer.get_tokens_as_string() == "for,(,auto,i,=,0,;,i,<,10,;,++,i,),<EOF>"
 
 def test_expression_switch_case():
-    """Mixed - switch statement tokens"""
+    """98. Expression"""
     tokenizer = Tokenizer("case 1+2: break;")
     assert tokenizer.get_tokens_as_string() == "case,1,+,2,:,break,;,<EOF>"
 
 def test_expression_whitespace_variants():
-    """Mixed - various whitespace"""
+    """99. Expression"""
     input_text = "a  +\tb\n*\r\nc"
     tokenizer = Tokenizer(input_text)
     assert tokenizer.get_tokens_as_string() == "a,+,b,*,c,<EOF>"
 
 def test_expression_struct_init():
-    """Mixed - struct initialization"""
+    """100. Expression"""
     tokenizer = Tokenizer('Point p = {10, 20};')
     assert tokenizer.get_tokens_as_string() == "Point,p,=,{,10,,,20,},;,<EOF>"
