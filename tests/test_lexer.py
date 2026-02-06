@@ -220,175 +220,170 @@ def test_integer_single_digit():
     tokenizer = Tokenizer("5")
     assert tokenizer.get_tokens_as_string() == "5,<EOF>"
 
-def test_integer_start_with_zero():
-    """43. Integer literal"""
-    tokenizer = Tokenizer("05")
-    assert tokenizer.get_tokens_as_string() == "05,<EOF>"
-
 def test_integer_long_digits():
-    """44. Integer literal"""
-    tokenizer = Tokenizer("12345678901234567890")
-    assert tokenizer.get_tokens_as_string() == "12345678901234567890,<EOF>"
+    """43. Integer literal"""
+    tokenizer = Tokenizer("012345678901234567890")
+    assert tokenizer.get_tokens_as_string() == "012345678901234567890,<EOF>"
 
 def test_integer_negative():
-    """45. Integer literal"""
+    """44. Integer literal"""
     tokenizer = Tokenizer("-123")
     assert tokenizer.get_tokens_as_string() == "-123,<EOF>"
 
 #this is float test
 def test_float_decimal_point():
-    """46. Float literal"""
+    """45. Float literal"""
     tokenizer = Tokenizer("0.0")
     assert tokenizer.get_tokens_as_string() == "0.0,<EOF>"
 
 def test_float_decimal_one_digit_before_point():
-    """47. Float literal"""
+    """46. Float literal"""
     tokenizer = Tokenizer("1.")
     assert tokenizer.get_tokens_as_string() == "1.,<EOF>"
 
 def test_float_decimal_one_digit_after_point():
-    """48. Float literal"""
+    """47. Float literal"""
     tokenizer = Tokenizer(".5")
     assert tokenizer.get_tokens_as_string() == ".5,<EOF>"
 
 def test_float_decimal_e():
-    """49. Float literal"""
+    """48. Float literal"""
     tokenizer = Tokenizer("1e4")
     assert tokenizer.get_tokens_as_string() == "1e4,<EOF>"
 
 def test_float_decimal_e_negative():
-    """50. Float literal"""
+    """49. Float literal"""
     tokenizer = Tokenizer("1e-4")
     assert tokenizer.get_tokens_as_string() == "1e-4,<EOF>"
 
 def test_float_decimal_e_positive():
-    """51. Float literal"""
+    """50. Float literal"""
     tokenizer = Tokenizer("1e+4")
     assert tokenizer.get_tokens_as_string() == "1e+4,<EOF>"
 
 def test_float_decimal_E_negative():
-    """52. Float literal"""
+    """51. Float literal"""
     tokenizer = Tokenizer("2E-3")
     assert tokenizer.get_tokens_as_string() == "2E-3,<EOF>"
 
-def test_float_decimal_E_positive():
-    """53. Float literal"""
-    tokenizer = Tokenizer("2E+3")
-    assert tokenizer.get_tokens_as_string() == "2E+3,<EOF>"
-
 def test_float_decimal_point_e():
-    """54. Float literal"""
+    """52. Float literal"""
     tokenizer = Tokenizer("1.23e4")
     assert tokenizer.get_tokens_as_string() == "1.23e4,<EOF>"
 
 def test_float_decimal_point_E():
-    """55. Float literal"""
+    """53. Float literal"""
     tokenizer = Tokenizer("5.67E-200")
     assert tokenizer.get_tokens_as_string() == "5.67E-200,<EOF>"
 
 def test_float_decimal_two_point():
-    """56. Float literal"""
+    """54. Float literal"""
     tokenizer = Tokenizer("5.67.8")
     assert tokenizer.get_tokens_as_string() == "5.67,.8,<EOF>"
 
 def test_float_decimal_two_e():
-    """57. Float literal"""
+    """55. Float literal"""
     tokenizer = Tokenizer("5e6e7") # floatlit + id
     assert tokenizer.get_tokens_as_string() == "5e6,e7,<EOF>"
 
 #this is string test
 def test_string_empty():
-    """58. String literal"""
+    """56. String literal"""
     tokenizer = Tokenizer('""')
     assert tokenizer.get_tokens_as_string() == ",<EOF>"
 
 def test_string_simple():
-    """59. String literal"""
+    """57. String literal"""
     tokenizer = Tokenizer('"hello"')
     assert tokenizer.get_tokens_as_string() == "hello,<EOF>"
 
 def test_string_with_spaces():
-    """60. String literal"""
+    """58. String literal"""
     tokenizer = Tokenizer('"hello world"')
     assert tokenizer.get_tokens_as_string() == "hello world,<EOF>"
 
 def test_string_escape_backspace():
-    """61. String literal"""
+    """59. String literal"""
     tokenizer = Tokenizer('"test\\bbackspace"')
     assert tokenizer.get_tokens_as_string() == "test\\bbackspace,<EOF>"
 
 def test_string_escape_formfeed():
-    """62. String literal"""
+    """60. String literal"""
     tokenizer = Tokenizer('"test\\fformfeed"')
     assert tokenizer.get_tokens_as_string() == "test\\fformfeed,<EOF>"
 
 def test_string_escape_carriage_return():
-    """63. Unclosed string"""
+    """61. Unclosed string"""
     tokenizer = Tokenizer('"test \\\r')
     assert tokenizer.get_tokens_as_string() == 'Unclosed String: test '
 
 def test_string_escape_newline():
-    """64. String literal"""
+    """62. String literal"""
     tokenizer = Tokenizer('"test\\nnewline"')
     assert tokenizer.get_tokens_as_string() == "test\\nnewline,<EOF>"
 
 def test_string_escape_tab():
-    """65. String literal"""
+    """63. String literal"""
     tokenizer = Tokenizer('"test\\ttab"')
     assert tokenizer.get_tokens_as_string() == "test\\ttab,<EOF>"
 
 def test_string_escape_quote():
-    """66. String literal"""
+    """64. String literal"""
     tokenizer = Tokenizer('"He said: \\"Hello\\""')
     assert tokenizer.get_tokens_as_string() == 'He said: \\"Hello\\",<EOF>'
 
 def test_string_escape_backslash():
-    """67. String literal"""
+    """65. String literal"""
     tokenizer = Tokenizer('"path\\\\to\\\\file"')
     assert tokenizer.get_tokens_as_string() == "path\\\\to\\\\file,<EOF>"
 
 def test_string_with_numbers():
-    """68. String literal"""
+    """66. String literal"""
     tokenizer = Tokenizer('"abc123def456"')
     assert tokenizer.get_tokens_as_string() == "abc123def456,<EOF>"
 
 def test_string_with_special_chars():
-    """69. String literal"""
+    """67. String literal"""
     tokenizer = Tokenizer('"!@#$%^&*()_+-=[]{}|;:,.<>?/"')
     assert tokenizer.get_tokens_as_string() == "!@#$%^&*()_+-=[]{}|;:,.<>?/,<EOF>"
 
 def test_string_single_char():
-    """70. String literal"""
+    """68. String literal"""
     tokenizer = Tokenizer('"a"')
     assert tokenizer.get_tokens_as_string() == "a,<EOF>"
 
 def test_string_long():
-    """71. String literal"""
+    """69. String literal"""
     tokenizer = Tokenizer('"This is a very long string with many words and characters"')
     assert tokenizer.get_tokens_as_string() == "This is a very long string with many words and characters,<EOF>"
 
 def test_string_in_expression():
-    """72. String literal"""
+    """70. String literal"""
     tokenizer = Tokenizer('auto msg = "Hello";')
     assert tokenizer.get_tokens_as_string() == 'auto,msg,=,Hello,;,<EOF>'
 
 def test_string_illegal_escape():
-    """73. Illegal escape"""
+    """71. Illegal escape"""
     tokenizer = Tokenizer('"Hi \\a Long"') 
     assert tokenizer.get_tokens_as_string() == 'Illegal Escape In String: Hi \\a'
 
+def test_string_illegal_escape_at_start():
+    """72. Illegal Escape"""
+    tokenizer = Tokenizer('"\\vtest"')
+    assert tokenizer.get_tokens_as_string() == 'Illegal Escape In String: \\v'
+
 def test_string_illegal_escape_enter():
-    """74. Unclosed string"""
+    """73. Unclosed string"""
     tokenizer = Tokenizer('"Hi \\\n') 
     assert tokenizer.get_tokens_as_string() == 'Unclosed String: Hi '
 
 def test_string_unclose():
-    """75. Unclosed string"""
+    """74. Unclosed string"""
     tokenizer = Tokenizer('"Hi Long')
     assert tokenizer.get_tokens_as_string() == 'Unclosed String: Hi Long'
 
 def test_string_unclose_enter():
-    """76. Unclosed string"""
+    """75. Unclosed string"""
     input_text = """
     "Hi
     Long"
@@ -396,10 +391,15 @@ def test_string_unclose_enter():
     tokenizer = Tokenizer(input_text) 
     assert tokenizer.get_tokens_as_string() == 'Unclosed String: Hi'
 
-def test_string_illegal_unclose():
-    """77. Illegal escape"""
-    tokenizer = Tokenizer('"Hi \\a Long')
-    assert tokenizer.get_tokens_as_string() == 'Illegal Escape In String: Hi \\a'
+def test_error_char_caret():
+    """76. Error Character"""
+    tokenizer = Tokenizer("a ^ b")
+    assert tokenizer.get_tokens_as_string() == "a,Error Token ^"
+
+def test_error_char_after_valid_token():
+    """77. Error Character"""
+    tokenizer = Tokenizer("abc@def")
+    assert tokenizer.get_tokens_as_string() == "abc,Error Token @"
 
 #this is identifier test
 def test_identifier_simple():
@@ -527,3 +527,4 @@ def test_expression_struct_init():
     """100. Expression"""
     tokenizer = Tokenizer('Point p = {10, 20};')
     assert tokenizer.get_tokens_as_string() == "Point,p,=,{,10,,,20,},;,<EOF>"
+

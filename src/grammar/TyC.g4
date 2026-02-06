@@ -56,7 +56,7 @@ vardecl: AUTO ID ASSIGN expr
         | typ ID 
         ;
 
-funccalldecl: ID LP arglist RP ;
+//funccalldecl: ID LP arglist RP ;
 arglist: expr argtail | ;
 argtail: CM expr argtail | ;
 
@@ -74,8 +74,8 @@ expr6: expr6 MUL expr7 | expr6 DIV expr7 | expr6 MOD expr7 | expr7 ;
 expr7: NOT expr7 | ADD expr7 | SUB expr7 | expr8 ;
 expr8: INCREMENT expr8 | DECREMENT expr8 | expr9 ;
 expr9: expr9 INCREMENT | expr9 DECREMENT | expr10 ;
-expr10: expr10 ACCESS expr11 | expr11 ;
-expr11: INTLIT | FLOATLIT | STRINGLIT | ID | funccalldecl | LP expr RP | LB exprlist RB;
+expr10: expr10 LP arglist RP | expr10 ACCESS ID | expr11 ;
+expr11: INTLIT | FLOATLIT | STRINGLIT | ID | LP expr RP | LB exprlist RB;
 //expr11: ID | LP expr RP ;
 
 stmt: vardecl SM
