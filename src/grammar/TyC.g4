@@ -163,9 +163,9 @@ CL: ':' ;
 
 ID: [a-zA-Z_][a-zA-Z0-9_]* ;
 
-INTLIT: [-]?[0-9]+ ;
+INTLIT: [0-9]+ ;
 
-FLOATLIT: [-]?[0-9]*'.'[0-9]+([Ee](SUB|ADD)?[0-9]+)?|[-]?[0-9]+'.'|[-]?[0-9]+[Ee](SUB|ADD)?[0-9]+;
+FLOATLIT: [0-9]*'.'[0-9]+([Ee](SUB|ADD)?[0-9]+)?|[0-9]+'.'|[0-9]+[Ee](SUB|ADD)?[0-9]+;
 
 fragment ESCAPE: '\\'[bfrnt"\\] ;
 STRINGLIT: ["](ESCAPE|~["\\\r\n])*["] {self.text = self.text[1:-1]};

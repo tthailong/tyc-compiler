@@ -228,7 +228,7 @@ def test_integer_long_digits():
 def test_integer_negative():
     """44. Integer literal"""
     tokenizer = Tokenizer("-123")
-    assert tokenizer.get_tokens_as_string() == "-123,<EOF>"
+    assert tokenizer.get_tokens_as_string() == "-,123,<EOF>"
 
 #this is float test
 def test_float_decimal_point():
@@ -468,7 +468,7 @@ def test_increment_decrement_operators():
 def test_expression_adjacent_operators():
     """89. Mixed"""
     tokenizer = Tokenizer("a++---10") 
-    assert tokenizer.get_tokens_as_string() == "a,++,--,-10,<EOF>"
+    assert tokenizer.get_tokens_as_string() == "a,++,--,-,10,<EOF>"
 
 def test_expression_nested_parentheses():
     """90. Mixed"""
@@ -527,4 +527,3 @@ def test_expression_struct_init():
     """100. Expression"""
     tokenizer = Tokenizer('Point p = {10, 20};')
     assert tokenizer.get_tokens_as_string() == "Point,p,=,{,10,,,20,},;,<EOF>"
-
